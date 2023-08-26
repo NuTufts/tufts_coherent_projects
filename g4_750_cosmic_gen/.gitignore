@@ -1,0 +1,6 @@
+.gitignore
+*.root
+*~
+*.log
+workdir*
+fileid*

@@ -1,0 +1,77 @@
+#####################################################################
+#
+# This job is meant to run CRY for a long time, storing
+# trajectories from cosmics that hit the detector. 
+# Will store entire trajectory through active volume.
+#
+# We will compile such data and use it to sample cosmic events
+# Time is important.
+#
+#####################################################################
+
+# look for macros in the `macro` folder
+/control/macroPath ZZZZZZ
+
+# do we save the info for each photon hit: can produce big output files
+/cenns/analysis/saveAllPhotonHits false
+
+# Load the geometry and define sensitive detectors: default COH-LAR-750 Engineering model
+/control/execute lar1ton_eng_model.mac
+
+# set the scintillation model
+#/physics/setScintModel NEST
+#/physics/setScintModel CENNS # legacy CENNS-10 scint model
+/physics/scint false # Turn off scintillation
+
+# Activate energy deposit tracking
+/detector/setSDconfig  edepseg:gdml/sdconfigs/edepseg.json
+
+# Provide the volume for energy to be tracked
+/detector/setSDvolume  edepseg:LAr
+
+# set Edep sim info to store
+/edep/db/set/trajectoryBoundary :*:*:pvLAr
+/edep/db/set/dropNonCrossing true
+/edep/db/set/dropPrimaryList true
+
+# Construct the geometry and physics list
+/run/initialize
+
+# deactivate Cerenkov Process
+/process/inactivate Cerenkov
+
+# Dump channel information into a json file
+/cenns/channelman/exportToJson chmap.json
+
+# Setup the DAQ: must be after the geometry is constructed since we need to map channels to sensitive detector volumes
+# NO DAQ
+# /cenns/daq/setConfig gdml/lar1ton_eng/daq_model.json
+#/cenns/daq/configure x
+
+# Define the output file
+/cenns/analysis/setOutputFileName YYYYYY
+
+# Define the generated particle: CRY
+/generator/setGenerator cry
+/generator/setCRYPlane 7150.0
+/generator/setCRYGenWindowSec 0.005
+
+# For debug: shoot a muon down the detector
+#/generator/setGenerator gps
+
+#/gps/particle mu-
+#/gps/ene/mono 200 MeV
+#/gps/pos/type Point
+#/gps/position 0.0 0.0 75.0 cm
+#/gps/direction 0 0 -1
+
+#/gps/particle e-
+#/gps/ene/mono 30.0 MeV
+#/gps/pos/type Point
+#/gps/position 0.0 0.0 0.0 cm
+#/gps/direction 0 0 -1
+
+##/tracking/verbose 2
+
+# Run one event
+/run/beamOn XXXXXX
