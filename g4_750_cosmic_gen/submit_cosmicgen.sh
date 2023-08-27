@@ -5,8 +5,8 @@
 #SBATCH --job-name=cohlar750_cosmic
 #SBATCH --output=cohlar750_cosmic_test.log
 #SBATCH --mem-per-cpu=4000
-#SBATCH --time=1-00:00:00
-#SBATCH --array=0
+#SBATCH --time=8:00:00
+#SBATCH --array=1-99
 #SBATCH --cpus-per-task=1
 #SBATCH --partition=batch,preempt,wongjiradlab
 ##SBATCH --partition=preempt

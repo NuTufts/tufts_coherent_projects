@@ -16,7 +16,7 @@ PROJECT_DIR=$3
 WORKDIR=$4
 
 # output dir for output files
-OTUPUTDIR=$5
+OUTPUTDIR=$5
 
 # NUM EVENTS
 NUMEVENTS=1000
@@ -26,7 +26,7 @@ NUMEVENTS=1000
 # -----------------------
 
 # jobid is just the slurm array id
-jobid=${SLURM_ARRAY_ID}
+jobid=${SLURM_ARRAY_TASK_ID}
 
 # line number we will read from the "FileID" file @ FILEID_LIST_PATH
 let lineno=${jobid}+1
@@ -90,9 +90,9 @@ sedcmd1="s|XXXXXX|${NUMEVENTS}|g"
 sedcmd2="s|YYYYYY|${outputname}|g"
 sedcmd3="s|ZZZZZZ|${G4_COH_LAR_DIR}/macro|g"
 
-echo $sedcmd1
-echo $sedcmd2
-echo $sedcmd3
+#echo $sedcmd1
+#echo $sedcmd2
+#echo $sedcmd3
 
 sed -i $sedcmd1 $macname
 sed -i $sedcmd2 $macname
@@ -105,4 +105,6 @@ logfile_path=`printf ${WORKDIR}/log_jobid%d_fileid%d.txt ${jobid} ${fileid}`
 
 mkdir -p $OUTPUTDIR/$subdir/
 cenns.exe -m $macname &> $logfile_path
+cp $outputname $OUTPUTDIR/$subdir/
+ls -lh $OUTPUTDIR/$subdir/$outputname >> $logfile_path
 
